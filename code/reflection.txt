@@ -1,7 +1,14 @@
-Write your reflection here.
+For this week's assignment, I used Claude to help write and debug the code, and worked through each test failure with it. 
+When my tests initially failed due to a missing python-dotenv package, I learned to read the first error (where 36 tests silently vanished) 
+while raise_for_status() ensured that a 401 or 404 status code stopped the code immediately rather than returning a dict that causes a later KeyError. 
+Structuring requests with form data for Azure endpoints and a JSON body for Ollama taught me how strictly API contracts enforce formatting.
 
-See reflection.md for what makes a good reflection — be specific, use the
-terminology from this assignment (REST API, endpoint, HTTP status code,
-raise_for_status, API key, form data vs. JSON body, rate limit, caching,
-json_normalize, record_path, meta, grain, opinion mining, named-entity
-recognition, prompt, system prompt, reasoning model), and make it actionable.
+Caching ensured each review was sent only once so re-runs cost zero against the 150-request cap. 
+Tracing the data grain showed me why opinions_table needed loops instead of json_normalize, 
+which flattens nested lists (one list per document into rows via record_path, with meta copying parent fields) but cannot follow a cross-reference (ref) from one list to another. 
+This extraction allowed opinion mining to capture T3's contrasting sentiment ("seating" positive, "music" negative) where sentence-level labels failed, 
+while named-entity recognition caught Pete and Otto who lacked opinion words entirely.
+
+Because only 20 example sentences fit in the prompt, Pandas calculated the counts so the reasoning model could focus purely on writing under the system prompt. 
+Additionally, the app warns the user and never calls the model when no evidence mentions the thing asked about, preventing hallucinations. 
+Next time, my actionable habit will be to test every data transformation on five hand-checkable rows before running the full dataset.
