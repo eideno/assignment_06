@@ -98,8 +98,12 @@ def sentences_table(documents: list) -> pd.DataFrame:
     Azure leaves on `sentence_text` with `.str.strip()`.
     """
     df = pd.json_normalize(
-        documents, record_path="sentences", meta=["review_id"], record_prefix="sentence_"
+        documents,
+        record_path="sentences",
+        meta=["review_id"],
+        record_prefix="sentence_",
     )
+
     df["sentence_id"] = df.groupby("review_id").cumcount()
     df["sentence_text"] = df["sentence_text"].str.strip()
     columns = ["review_id", "sentence_id", "sentence_text",
